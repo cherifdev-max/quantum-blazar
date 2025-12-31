@@ -1,0 +1,200 @@
+{
+  "sst": [
+    {
+      "id": "sst-1",
+      "companyName": "TechSolutions SAS",
+      "siret": "12345678900010",
+      "address": "12 Rue de l'Industrie, 75011 Paris",
+      "mainContact": {
+        "name": "Cedric",
+        "email": "cherif.laaguidi@gmail.com",
+        "phone": "0102030405"
+      }
+    },
+    {
+      "id": "sst-2",
+      "companyName": "elecExperts",
+      "siret": "98765432100022",
+      "address": "45 Avenue de l'Energie, 69000 Lyon",
+      "mainContact": {
+        "name": "REDA",
+        "email": "cherif.laaguidi@gmail.com",
+        "phone": "0478901234"
+      }
+    },
+    {
+      "id": "sst-674bc460-e185-4fb9-ab7e-c19ab9aef3fc",
+      "companyName": "Cherif",
+      "siret": "507 437 341 00013",
+      "address": "69008\r\n29 Rue Du Professeur Joseph Nicolas Résidence Mermoz",
+      "mainContact": {
+        "name": "LAAGUIDI CHERIF",
+        "email": "cherif.laaguidi@gmail.com",
+        "phone": "0767571457"
+      }
+    }
+  ],
+  "contracts": [
+    {
+      "id": "c-1",
+      "sstId": "sst-1",
+      "client": "EDF",
+      "orderNumber": "CMD-2024-001",
+      "startDate": "2024-01-01",
+      "endDate": "2024-12-31",
+      "totalAmount": 150000,
+      "billedAmount": 75000,
+      "purchasedAmount": 100000,
+      "dc4Status": "Validé",
+      "description": "Maintenance préventive Groupe A"
+    },
+    {
+      "id": "c-2",
+      "sstId": "sst-1",
+      "client": "ENEDIS",
+      "orderNumber": "CMD-2024-002",
+      "startDate": "2024-03-01",
+      "endDate": "2026-02-15",
+      "totalAmount": 50000,
+      "billedAmount": 10000,
+      "purchasedAmount": 40000,
+      "dc4Status": "Soumis",
+      "description": "Migration compteurs Linky - Zone Nord"
+    },
+    {
+      "id": "c-3",
+      "sstId": "sst-2",
+      "client": "EDF",
+      "orderNumber": "CMD-2024-003",
+      "startDate": "2024-06-01",
+      "endDate": "2026-09-30",
+      "totalAmount": 25000,
+      "billedAmount": 24000,
+      "purchasedAmount": 20000,
+      "dc4Status": "Validé",
+      "description": "Audit énergétique"
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "d-1",
+      "contractId": "c-1",
+      "month": "2024-01",
+      "type": "BL",
+      "status": "Validé"
+    },
+    {
+      "id": "d-2",
+      "contractId": "c-1",
+      "month": "2024-01",
+      "type": "PV",
+      "status": "Validé"
+    },
+    {
+      "id": "d-3",
+      "contractId": "c-1",
+      "month": "2024-02",
+      "type": "PV",
+      "status": "Soumis"
+    },
+    {
+      "id": "d-4",
+      "contractId": "c-2",
+      "month": "2024-03",
+      "type": "BL",
+      "status": "En attente"
+    },
+    {
+      "id": "del-22c2d558-7329-4a93-b0d3-9e454da23573",
+      "contractId": "c-1",
+      "month": "2025-12",
+      "type": "BL",
+      "status": "Soumis",
+      "submissionDate": "2025-12-25T14:49:41.820Z",
+      "fileUrl": "/documents/mock-file.pdf"
+    },
+    {
+      "id": "del-5859a36d-4f89-432a-9151-5eb872245502",
+      "contractId": "c-1",
+      "month": "2025-12",
+      "type": "PV",
+      "status": "Validé",
+      "submissionDate": "2025-12-25T14:39:12.994Z",
+      "fileUrl": "/documents/mock-file.pdf"
+    },
+    {
+      "id": "del-32ccd5d8-b8c1-40f2-bc81-08d7fceb73f4",
+      "contractId": "c-2",
+      "month": "2025-12",
+      "type": "BL",
+      "status": "Validé",
+      "submissionDate": "2025-12-25T14:38:54.638Z",
+      "fileUrl": "/documents/mock-file.pdf"
+    },
+    {
+      "id": "del-97b97b56-9213-4d87-b7a7-3bc230cae1c0",
+      "contractId": "c-2",
+      "month": "2025-12",
+      "type": "PV",
+      "status": "Soumis",
+      "submissionDate": "2025-12-25T23:01:47.112Z",
+      "fileUrl": "/documents/mock-file.pdf"
+    },
+    {
+      "id": "del-bc6ac7f1-5fc2-4164-af1d-09da2d297580",
+      "contractId": "c-3",
+      "month": "2025-12",
+      "type": "BL",
+      "status": "Soumis",
+      "submissionDate": "2025-12-25T15:43:45.739Z",
+      "fileUrl": "/documents/mock-file.pdf"
+    },
+    {
+      "id": "del-95eaa2fb-d45f-42ea-b3f9-c9eb18f3b11e",
+      "contractId": "c-3",
+      "month": "2025-12",
+      "type": "PV",
+      "status": "Soumis",
+      "submissionDate": "2025-12-25T23:05:22.635Z",
+      "fileUrl": "/documents/mock-file.pdf"
+    }
+  ],
+  "emails": [
+    {
+      "id": "email-f86f7ed3-9d9d-4b67-a1be-08e1c1609443",
+      "to": "cherif.laaguidi@gmail.com",
+      "subject": "Rappel : Dépôt de vos livrables (BL/PV)",
+      "body": "Bonjour Jean Dupont,\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nCordialement,\nService Achats.",
+      "sentAt": "2025-12-25T13:18:44.372Z",
+      "status": "sent"
+    },
+    {
+      "id": "email-313c671f-2f23-4ab8-9af3-960e75d36924",
+      "to": "cherif.laaguidi@gmail.com",
+      "subject": "Rappel : Dépôt de vos livrables (BL/PV)",
+      "body": "Bonjour Marie Curie,\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nCordialement,\nService Achats.",
+      "sentAt": "2025-12-25T13:18:44.372Z",
+      "status": "sent"
+    },
+    {
+      "id": "email-152c478a-0821-4551-b21c-eeb20df2db60",
+      "to": "cherif.laaguidi@gmail.com",
+      "subject": "Rappel : Dépôt de vos livrables (BL/PV)",
+      "body": "Bonjour LAAGUIDI CHERIF,\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nCordialement,\nService Achats.",
+      "sentAt": "2025-12-25T13:18:44.372Z",
+      "status": "sent"
+    }
+  ],
+  "clients": [
+    {
+      "id": "cl-1",
+      "name": "EDF",
+      "description": "Electricité de France"
+    },
+    {
+      "id": "cl-2",
+      "name": "ENEDIS",
+      "description": "Gestionnaire du réseau de distribution"
+    }
+  ]
+}
