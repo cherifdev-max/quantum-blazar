@@ -59,6 +59,13 @@ export async function getSSTById(id: string): Promise<SSTEntity | undefined> {
     return mapDoc<SSTEntity>(docSnap);
 }
 
+export async function getSSTByToken(token: string): Promise<SSTEntity | undefined> {
+    const q = query(collection(db, "sst"), where("portalToken", "==", token));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) return undefined;
+    return mapDoc<SSTEntity>(querySnapshot.docs[0]);
+}
+
 export async function createSST(formData: FormData) {
     const newSST: Omit<SSTEntity, "id"> = {
         companyName: formData.get("companyName") as string,
@@ -69,10 +76,13 @@ export async function createSST(formData: FormData) {
             email: formData.get("contactEmail") as string,
             phone: formData.get("contactPhone") as string,
         },
-    };
+        phone: formData.get("contactPhone") as string,
+    },
+        portalToken: crypto.randomUUID()
+};
 
-    await addDoc(collection(db, "sst"), newSST);
-    revalidatePath("/sst");
+await addDoc(collection(db, "sst"), newSST);
+revalidatePath("/sst");
 }
 
 export async function updateSST(id: string, formData: FormData) {
@@ -119,7 +129,15 @@ export async function sendCampaign(formData?: FormData) {
     for (const sst of targetSSTs) {
         const subject = `[${campaignType}] Rappel : Dépôt de vos livrables (BL/PV)`;
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://quantum-blazar.vercel.app';
-        const bodyText = `Bonjour ${sst.mainContact.name},\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nAccéder à mon espace : ${appUrl}/deliverables\n\nCordialement,\nService Achats.`;
+        // Generate portalToken if missing (lazy migration)
+        let portalToken = sst.portalToken;
+        if (!portalToken) {
+            portalToken = crypto.randomUUID();
+            await updateDoc(doc(db, "sst", sst.id), { portalToken });
+        }
+
+        const magicLink = `${appUrl}/portal/${portalToken}`;
+        const bodyText = `Bonjour ${sst.mainContact.name},\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nAccéder à mon espace : ${magicLink}\n\nCordialement,\nService Achats.`;
 
         const bodyHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
@@ -128,15 +146,15 @@ export async function sendCampaign(formData?: FormData) {
                 <p>Nous vous rappelons que vous devez déposer vos <strong>BL</strong> et <strong>PV</strong> pour la période en cours avant le 25 du mois.</p>
                 
                 <div style="text-align: center; margin: 30px 0;">
-                    <a href="${appUrl}/deliverables" 
+                    <a href="${magicLink}" 
                        style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
                        Accéder à mon Espace Dépôt
                     </a>
                 </div>
                 
                 <p style="font-size: 14px; color: #64748b;">
-                    Si vous ne pouvez pas cliquer sur le bouton, utilisez ce lien : <br>
-                    <a href="${appUrl}/deliverables" style="color: #2563eb;">${appUrl}/deliverables</a>
+                    Si vous ne pouvez pas cliquer sur le bouton, utilisez ce lien sécurisé : <br>
+                    <a href="${magicLink}" style="color: #2563eb;">${magicLink}</a>
                 </p>
                 
                 <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">

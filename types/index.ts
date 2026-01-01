@@ -8,6 +8,7 @@ export type SSTEntity = {
         email: string;
         phone: string;
     };
+    portalToken?: string; // Secure token for magic link access
 };
 
 export type ContractStatus = 'Draft' | 'Active' | 'Completed' | 'Terminated';
