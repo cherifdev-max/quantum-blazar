@@ -4,8 +4,9 @@ import { fr } from "date-fns/locale";
 import Link from "next/link";
 import { CheckCircle, Clock, AlertCircle, FileText, Upload } from "lucide-react";
 
-export default async function PortalPage({ params }: { params: { token: string } }) {
-    const sst = await getSSTByToken(params.token);
+export default async function PortalPage({ params }: { params: Promise<{ token: string }> }) {
+    const { token } = await params;
+    const sst = await getSSTByToken(token);
 
     if (!sst) {
         return (
