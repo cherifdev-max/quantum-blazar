@@ -139,6 +139,7 @@ export async function sendCampaign(formData?: FormData) {
 
         for (const contract of sstContracts) {
             // Find both BL and PV for this month
+            console.log(`[DEBUG] Looking for docs in month: "${currentMonth}" for Contract ${contract.id}`);
             const docs = allDeliverables.filter(d =>
                 d.contractId === contract.id &&
                 d.month === currentMonth &&
