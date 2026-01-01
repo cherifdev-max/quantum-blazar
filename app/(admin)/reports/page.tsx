@@ -2,21 +2,7 @@ import Link from "next/link";
 // ... imports
 
 // ... inside the component
-{
-    expiringContracts.slice(0, 3).map((contract) => (
-        <Link
-            href={`/contracts/${contract.id}/edit`}
-            key={contract.id}
-            className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg border border-slate-100 hover:bg-slate-100 transition-colors cursor-pointer group"
-        >
-            <Calendar className="h-4 w-4 text-slate-400 mt-1 group-hover:text-blue-500" />
-            <div>
-                <p className="text-sm font-medium text-slate-900 group-hover:text-blue-600">{contract.orderNumber} - Fin le {new Date(contract.endDate).toLocaleDateString()}</p>
-                <p className="text-xs text-slate-500">{contract.client} • {contract.description}</p>
-            </div>
-        </Link>
-    ))
-}
+
 import { Badge } from "@/components/ui/Badge";
 import { AlertTriangle, Mail, Bell, CheckCheck, TrendingUp, Calendar } from "lucide-react";
 import { sendCampaign, getEmailLogs, getContracts, getSSTs } from "@/lib/actions";
