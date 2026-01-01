@@ -4,9 +4,10 @@ interface SendEmailParams {
     to: string;
     subject: string;
     html: string;
+    attachments?: { filename: string; content: Buffer }[];
 }
 
-export async function sendEmail({ to, subject, html }: SendEmailParams) {
+export async function sendEmail({ to, subject, html, attachments }: SendEmailParams) {
     const { SMTP_HOST, SMTP_USER, SMTP_PASS, SMTP_FROM, SMTP_PORT } = process.env;
 
     let transporter;
@@ -36,6 +37,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
             to,
             subject,
             html,
+            attachments,
         });
 
         console.log("Message sent: %s", info.messageId);

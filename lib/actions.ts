@@ -91,6 +91,8 @@ export async function updateSST(id: string, formData: FormData) {
     revalidatePath("/sst");
 }
 
+// ... (imports need to be checked, adding update below)
+
 export async function sendCampaign(formData?: FormData) {
     const logs: Omit<EmailLog, "id">[] = [];
     const sstId = formData?.get("sstId")?.toString();
@@ -108,18 +110,54 @@ export async function sendCampaign(formData?: FormData) {
     const batch = writeBatch(db);
     const emailsRef = collection(db, "emails");
 
+    // Helper to find BL for current month
+    const currentDate = new Date();
+    const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+    const allContracts = await getContracts();
+    const allDeliverables = await getDeliverables();
+
     for (const sst of targetSSTs) {
         const subject = `[${campaignType}] Rappel : Dépôt de vos livrables (BL/PV)`;
         const bodyText = `Bonjour ${sst.mainContact.name},\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nCordialement,\nService Achats.`;
         const bodyHtml = `<p>Bonjour <strong>${sst.mainContact.name}</strong>,</p><p>Nous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.</p><p>Cordialement,<br>Service Achats.</p>`;
 
         let status: 'sent' | 'failed' = 'sent';
+        let attachments: { filename: string; content: Buffer }[] = [];
+
+        // Find relevant BL for this SST and Month
+        // We look for ANY contract active for this SST
+        const sstContracts = allContracts.filter(c => c.sstId === sst.id);
+
+        for (const contract of sstContracts) {
+            const bl = allDeliverables.find(d =>
+                d.contractId === contract.id &&
+                d.type === 'BL' &&
+                d.month === currentMonth
+            );
+
+            // If BL exists (even if not 'Soumis', we can generate the draft), we generate it
+            // Ideally we only send if it's relevant, but for "Reminder" maybe we attach the draft?
+            // Requirement says "for the subcontractor concerned if it exists"
+            if (bl) {
+                try {
+                    const { generateBLPDF } = await import("./pdf-generator");
+                    const pdfBuffer = await generateBLPDF(contract, sst, bl);
+                    attachments.push({
+                        filename: `BL_${sst.companyName}_${currentMonth}.pdf`,
+                        content: pdfBuffer
+                    });
+                } catch (e) {
+                    console.error("Error generating PDF attachment", e);
+                }
+            }
+        }
 
         // Attempt sending real email
         const result = await sendEmail({
             to: sst.mainContact.email,
             subject,
-            html: bodyHtml
+            html: bodyHtml,
+            attachments
         });
 
         status = result.success ? 'sent' : 'failed';
