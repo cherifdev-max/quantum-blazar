@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
     }
 
     // If user is logged in and tries to access /login, redirect to dashboard
-    if (session && isLoginPage) {
+    if (session && request.nextUrl.pathname === "/login") {
         return NextResponse.redirect(new URL("/", request.url));
     }
 
