@@ -151,7 +151,7 @@ export default async function Home() {
           description="Fins de contrats proches"
           className="border-l-4 border-l-red-500"
           tooltip="Contrats arrivant à échéance dans les 3 mois."
-          href="/contracts"
+          href="/reports"
         />
       </div>
 
