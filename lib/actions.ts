@@ -341,16 +341,24 @@ export async function generateMonthlyDeliverables() {
     return createdCount;
 }
 
-export async function updateDeliverableStatus(id: string, newStatus: string) {
+export async function updateDeliverableStatusAction(id: string, newStatus: string, signatureData?: string) {
     const deliverableRef = doc(db, "deliverables", id);
     const updateData: any = { status: newStatus };
 
     if (newStatus === 'Soumis') {
         const docSnap = await getDoc(deliverableRef);
-        const type = docSnap.exists() ? docSnap.data().type : 'BL';
+        if (docSnap.exists()) {
+            const existingData = docSnap.data();
+            const type = existingData.type || 'BL';
 
-        updateData.submissionDate = new Date().toISOString();
-        updateData.fileUrl = `/documents/preview/${id}?type=${type}`;
+            updateData.submissionDate = new Date().toISOString();
+            updateData.fileUrl = `/documents/preview/${id}?type=${type}`;
+
+            // Update signature if provided
+            if (signatureData) {
+                updateData["data.signature"] = signatureData;
+            }
+        }
     }
 
     await updateDoc(deliverableRef, updateData);

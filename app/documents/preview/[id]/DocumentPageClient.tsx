@@ -12,7 +12,7 @@ interface DocumentPageClientProps {
     deliverable: Deliverable;
 }
 
-import { updateDeliverableStatus } from "@/lib/actions";
+import { updateDeliverableStatusAction } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -52,7 +52,7 @@ export default function DocumentPageClient({ type, contract, sst, deliverable, t
 
         setSubmitting(true);
         try {
-            await updateDeliverableStatus(deliverable.id, 'Soumis', signatureData);
+            await updateDeliverableStatusAction(deliverable.id, 'Soumis', signatureData);
             alert("Document soumis avec succès !");
             if (token) {
                 router.push(`/portal/${token}`);

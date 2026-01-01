@@ -6,7 +6,7 @@ import { CheckCircle, Clock, AlertCircle, Printer, Filter, Upload, XCircle, Refr
 import { Badge } from "@/components/ui/Badge";
 import { DeliverableStatus, Contract, Deliverable } from "@/types";
 import { cn } from "@/lib/utils";
-import { updateDeliverableStatus, deleteDeliverable } from "@/lib/actions";
+import { updateDeliverableStatusAction, deleteDeliverable } from "@/lib/actions";
 import DeleteButton from "@/components/ui/DeleteButton";
 import EditDeliverableDialog from "./EditDeliverableDialog";
 
@@ -20,7 +20,7 @@ export default function DeliverablesList({ initialDeliverables, contracts }: Del
     const [filterStatus, setFilterStatus] = useState("all");
 
     async function handleUpdateStatus(id: string, newStatus: string) {
-        await updateDeliverableStatus(id, newStatus);
+        await updateDeliverableStatusAction(id, newStatus);
     }
 
     const getContract = (id: string) => contracts.find(c => c.id === id);
