@@ -126,7 +126,9 @@ export async function sendCampaign(formData?: FormData) {
 
         // Find relevant BL for this SST and Month
         // We look for ANY contract active for this SST
-        const sstContracts = allContracts.filter(c => c.sstId === sst.id);
+        // Fix: Ensure robust comparison by trimming and converting to string
+        const sstContracts = allContracts.filter(c => String(c.sstId).trim() === String(sst.id).trim());
+
         console.log(`[DEBUG] SST ID: "${sst.id}" (${sst.companyName})`);
         console.log(`[DEBUG] Total Contracts fetched: ${allContracts.length}`);
         if (allContracts.length > 0) {
