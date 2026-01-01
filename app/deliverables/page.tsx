@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import DeliverablesList from "./DeliverablesList";
 import GenerateButton from "./GenerateButton";
 import ManualDeliverableDialog from "./ManualDeliverableDialog";
+import { Suspense } from "react";
 
 export default async function DeliverablesPage() {
     const deliverables = await getDeliverables();
@@ -23,7 +24,9 @@ export default async function DeliverablesPage() {
                 </div>
             </div>
 
-            <DeliverablesList initialDeliverables={deliverables} contracts={contracts} />
+            <Suspense fallback={<div>Chargement...</div>}>
+                <DeliverablesList initialDeliverables={deliverables} contracts={contracts} />
+            </Suspense>
         </div>
     );
 }
