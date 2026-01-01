@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
     const session = request.cookies.get("session");
     const isPublicPath = (path: string) => {
-        return path === "/login" || path.startsWith("/api") || path.startsWith("/portal");
+        return path === "/login" || path.startsWith("/api") || path.startsWith("/portal") || path.startsWith("/documents/preview");
     };
 
     // If user is not logged in and tries to access protected route (anything other than public paths)
