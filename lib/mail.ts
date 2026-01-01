@@ -55,9 +55,9 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
             console.log("🔴 Email de test envoyé ! Cliquez ici pour le voir : %s", previewUrl);
         }
 
-        return true;
-    } catch (error) {
+        return { success: true };
+    } catch (error: any) {
         console.error("Error sending email:", error);
-        return false;
+        return { success: false, error: error.message };
     }
 }

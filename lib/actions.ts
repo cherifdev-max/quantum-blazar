@@ -116,20 +116,21 @@ export async function sendCampaign(formData?: FormData) {
         let status: 'sent' | 'failed' = 'sent';
 
         // Attempt sending real email
-        const success = await sendEmail({
+        const result = await sendEmail({
             to: sst.mainContact.email,
             subject,
             html: bodyHtml
         });
 
-        status = success ? 'sent' : 'failed';
+        status = result.success ? 'sent' : 'failed';
 
         const log = {
             to: sst.mainContact.email,
             subject,
             body: bodyText,
             sentAt: new Date().toISOString(),
-            status
+            status,
+            error: result.error || null // Store error details
         };
         const newDocRef = doc(emailsRef);
         batch.set(newDocRef, log);
