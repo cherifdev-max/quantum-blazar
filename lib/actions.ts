@@ -127,6 +127,7 @@ export async function sendCampaign(formData?: FormData) {
         // Find relevant BL for this SST and Month
         // We look for ANY contract active for this SST
         const sstContracts = allContracts.filter(c => c.sstId === sst.id);
+        console.log(`[DEBUG] SST ${sst.companyName} has ${sstContracts.length} contracts.`);
 
         for (const contract of sstContracts) {
             // Find both BL and PV for this month
@@ -135,6 +136,7 @@ export async function sendCampaign(formData?: FormData) {
                 d.month === currentMonth &&
                 (d.type === 'BL' || d.type === 'PV')
             );
+            console.log(`[DEBUG] Found ${docs.length} docs for contract ${contract.id} (Month: ${currentMonth})`);
 
             for (const docItem of docs) {
                 try {
@@ -144,6 +146,7 @@ export async function sendCampaign(formData?: FormData) {
                         filename: `${docItem.type}_${sst.companyName}_${currentMonth}.pdf`,
                         content: pdfBuffer
                     });
+                    console.log(`[DEBUG] Generated PDF for ${docItem.type}`);
                 } catch (e) {
                     console.error(`Error generating ${docItem.type} PDF attachment`, e);
                 }
