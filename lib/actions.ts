@@ -129,25 +129,23 @@ export async function sendCampaign(formData?: FormData) {
         const sstContracts = allContracts.filter(c => c.sstId === sst.id);
 
         for (const contract of sstContracts) {
-            const bl = allDeliverables.find(d =>
+            // Find both BL and PV for this month
+            const docs = allDeliverables.filter(d =>
                 d.contractId === contract.id &&
-                d.type === 'BL' &&
-                d.month === currentMonth
+                d.month === currentMonth &&
+                (d.type === 'BL' || d.type === 'PV')
             );
 
-            // If BL exists (even if not 'Soumis', we can generate the draft), we generate it
-            // Ideally we only send if it's relevant, but for "Reminder" maybe we attach the draft?
-            // Requirement says "for the subcontractor concerned if it exists"
-            if (bl) {
+            for (const docItem of docs) {
                 try {
                     const { generateBLPDF } = await import("./pdf-generator");
-                    const pdfBuffer = await generateBLPDF(contract, sst, bl);
+                    const pdfBuffer = await generateBLPDF(contract, sst, docItem);
                     attachments.push({
-                        filename: `BL_${sst.companyName}_${currentMonth}.pdf`,
+                        filename: `${docItem.type}_${sst.companyName}_${currentMonth}.pdf`,
                         content: pdfBuffer
                     });
                 } catch (e) {
-                    console.error("Error generating PDF attachment", e);
+                    console.error(`Error generating ${docItem.type} PDF attachment`, e);
                 }
             }
         }
