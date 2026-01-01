@@ -76,13 +76,11 @@ export async function createSST(formData: FormData) {
             email: formData.get("contactEmail") as string,
             phone: formData.get("contactPhone") as string,
         },
-        phone: formData.get("contactPhone") as string,
-    },
         portalToken: crypto.randomUUID()
-};
+    };
 
-await addDoc(collection(db, "sst"), newSST);
-revalidatePath("/sst");
+    await addDoc(collection(db, "sst"), newSST);
+    revalidatePath("/sst");
 }
 
 export async function updateSST(id: string, formData: FormData) {
