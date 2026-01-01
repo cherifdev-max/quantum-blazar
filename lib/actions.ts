@@ -358,6 +358,51 @@ export async function updateDeliverableStatusAction(id: string, newStatus: strin
             if (signatureData) {
                 updateData["data.signature"] = signatureData;
             }
+
+            // Send Admin Notification
+            try {
+                // Fetch details for the email
+                const contract = await getContractById(existingData.contractId);
+                let sstName = "Inconnu";
+                let contractRef = "Inconnu";
+
+                if (contract) {
+                    contractRef = contract.orderNumber;
+                    const sst = await getSSTById(contract.sstId);
+                    if (sst) {
+                        sstName = sst.companyName;
+                    }
+                }
+
+                const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://quantum-blazar.vercel.app';
+
+                await sendEmail({
+                    to: "cherif.laaguidi@gmail.com",
+                    subject: `[SST Manager] Nouveau document soumis : ${sstName} - ${type} ${existingData.month}`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px;">
+                            <h2 style="color: #1e293b;">Nouveau Document Soumis 📄</h2>
+                            <p>Le sous-traitant <strong>${sstName}</strong> vient de soumettre et signer son document.</p>
+                            
+                            <ul style="background-color: #f8fafc; padding: 15px; border-radius: 5px; list-style: none;">
+                                <li><strong>Type :</strong> ${type}</li>
+                                <li><strong>Période :</strong> ${existingData.month}</li>
+                                <li><strong>Contrat :</strong> ${contractRef}</li>
+                            </ul>
+
+                            <div style="margin-top: 25px;">
+                                <a href="${appUrl}/documents/preview/${id}?type=${type}" 
+                                   style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                                    👀 Voir et Valider le document
+                                </a>
+                            </div>
+                        </div>
+                    `
+                });
+                console.log(`[NOTIF] Admin notification sent for deliverable ${id}`);
+            } catch (error) {
+                console.error("Failed to send admin notification:", error);
+            }
         }
     }
 
