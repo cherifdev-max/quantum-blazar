@@ -118,8 +118,31 @@ export async function sendCampaign(formData?: FormData) {
 
     for (const sst of targetSSTs) {
         const subject = `[${campaignType}] Rappel : Dépôt de vos livrables (BL/PV)`;
-        const bodyText = `Bonjour ${sst.mainContact.name},\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nCordialement,\nService Achats.`;
-        const bodyHtml = `<p>Bonjour <strong>${sst.mainContact.name}</strong>,</p><p>Nous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.</p><p>Cordialement,<br>Service Achats.</p>`;
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://quantum-blazar.vercel.app';
+        const bodyText = `Bonjour ${sst.mainContact.name},\n\nNous vous rappelons que vous devez déposer vos BL et PV avant le 25 du mois.\n\nAccéder à mon espace : ${appUrl}/deliverables\n\nCordialement,\nService Achats.`;
+
+        const bodyHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+                <h2 style="color: #1e293b; margin-bottom: 20px;">Rappel Mensuel</h2>
+                <p>Bonjour <strong>${sst.mainContact.name}</strong>,</p>
+                <p>Nous vous rappelons que vous devez déposer vos <strong>BL</strong> et <strong>PV</strong> pour la période en cours avant le 25 du mois.</p>
+                
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="${appUrl}/deliverables" 
+                       style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                       Accéder à mon Espace Dépôt
+                    </a>
+                </div>
+                
+                <p style="font-size: 14px; color: #64748b;">
+                    Si vous ne pouvez pas cliquer sur le bouton, utilisez ce lien : <br>
+                    <a href="${appUrl}/deliverables" style="color: #2563eb;">${appUrl}/deliverables</a>
+                </p>
+                
+                <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+                <p style="font-size: 12px; color: #94a3b8;">Cordialement,<br>Le Service Achats</p>
+            </div>
+        `;
 
         let status: 'sent' | 'failed' = 'sent';
         let attachments: { filename: string; content: Buffer }[] = [];
