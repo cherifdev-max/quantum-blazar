@@ -24,20 +24,35 @@ interface DocumentPageClientProps {
     token?: string;
 }
 
+import SignatureCanvas from 'react-signature-canvas';
+import { useRef } from "react";
+
 export default function DocumentPageClient({ type, contract, sst, deliverable, token }: DocumentPageClientProps) {
     const router = useRouter();
     const [submitting, setSubmitting] = useState(false);
+    const sigCanvas = useRef<SignatureCanvas>(null);
 
     const handlePrint = () => {
         window.print();
     };
 
+    const handleClear = () => {
+        sigCanvas.current?.clear();
+    };
+
     const handleSubmit = async () => {
         if (!confirm("Voulez-vous confirmer et soumettre ce document ?\nUne fois soumis, vous ne pourrez plus le modifier.")) return;
 
+        // Check if signature is empty (optional, but good practice)
+        if (canSubmit && sigCanvas.current?.isEmpty()) {
+            if (!confirm("Vous n'avez pas signé. Voulez-vous continuer sans signature ?")) return;
+        }
+
+        const signatureData = sigCanvas.current?.isEmpty() ? undefined : sigCanvas.current?.getTrimmedCanvas().toDataURL('image/png');
+
         setSubmitting(true);
         try {
-            await updateDeliverableStatus(deliverable.id, 'Soumis');
+            await updateDeliverableStatus(deliverable.id, 'Soumis', signatureData);
             alert("Document soumis avec succès !");
             if (token) {
                 router.push(`/portal/${token}`);
@@ -81,6 +96,29 @@ export default function DocumentPageClient({ type, contract, sst, deliverable, t
                     </button>
                 </div>
             </div>
+
+            {/* Signature Area for SST */}
+            {canSubmit && (
+                <div className="max-w-[210mm] mx-auto mb-8 bg-white p-6 rounded-xl shadow-sm border border-slate-200 print:hidden">
+                    <h3 className="text-lg font-semibold text-slate-800 mb-4">Veuillez signer ci-dessous avant de valider</h3>
+                    <div className="border border-slate-300 rounded-lg bg-slate-50 relative">
+                        <SignatureCanvas
+                            ref={sigCanvas}
+                            penColor="black"
+                            canvasProps={{
+                                className: 'w-full h-40 cursor-crosshair rounded-lg'
+                            }}
+                        />
+                        <button
+                            onClick={handleClear}
+                            className="absolute top-2 right-2 text-xs text-slate-500 hover:text-red-500 bg-white px-2 py-1 rounded border border-slate-200"
+                        >
+                            Effacer
+                        </button>
+                    </div>
+                    <p className="text-xs text-slate-400 mt-2">Signez avec votre souris ou votre doigt.</p>
+                </div>
+            )}
 
             <div className="print:block">
                 <DocumentPreview

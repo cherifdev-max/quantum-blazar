@@ -84,7 +84,15 @@ export function DocumentPreview({ type, contract, sst, deliverable }: DocumentPr
             <div className="grid grid-cols-2 gap-12 mt-20">
                 <div className="border border-slate-300 h-32 p-4 rounded-lg relative">
                     <p className="absolute top-4 left-4 text-xs font-bold uppercase text-slate-400">Pour le Prestataire</p>
-                    <p className="absolute bottom-4 left-4">{sst.mainContact.name}</p>
+                    {data?.signature ? (
+                        <img
+                            src={data.signature}
+                            alt="Signature Prestataire"
+                            className="absolute bottom-2 left-4 max-h-20 max-w-[80%]"
+                        />
+                    ) : (
+                        <p className="absolute bottom-4 left-4">{sst.mainContact.name}</p>
+                    )}
                 </div>
                 <div className="border border-slate-300 h-32 p-4 rounded-lg relative">
                     <p className="absolute top-4 left-4 text-xs font-bold uppercase text-slate-400">Pour {contract.client}</p>
