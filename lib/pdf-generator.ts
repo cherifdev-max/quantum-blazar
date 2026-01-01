@@ -65,7 +65,7 @@ export async function generateBLPDF(contract: Contract, sst: SSTEntity, delivera
 
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    const descriptionLines = doc.splitTextToSize(contract.description, 180);
+    const descriptionLines = doc.splitTextToSize(contract.description || '', 180);
     doc.text(descriptionLines, 15, 95);
 
     // Table
