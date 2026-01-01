@@ -410,6 +410,28 @@ export async function updateDeliverableStatusAction(id: string, newStatus: strin
     revalidatePath("/deliverables");
 }
 
+export async function bulkUpdateDeliverableStatusAction(ids: string[], newStatus: string) {
+    // Bulk update action
+    if (!ids.length) return;
+
+    // Process in chunks of 500 (Firestore batch limit)
+    const chunks = [];
+    for (let i = 0; i < ids.length; i += 500) {
+        chunks.push(ids.slice(i, i + 500));
+    }
+
+    for (const chunk of chunks) {
+        const batch = writeBatch(db);
+        chunk.forEach(id => {
+            const ref = doc(db, "deliverables", id);
+            batch.update(ref, { status: newStatus });
+        });
+        await batch.commit();
+    }
+
+    revalidatePath("/deliverables");
+}
+
 export async function createManualDeliverable(formData: FormData) {
     try {
         const daysWorked = formData.get("daysWorked") ? parseFloat(formData.get("daysWorked") as string) : undefined;
