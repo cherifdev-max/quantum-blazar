@@ -78,7 +78,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
                                         <div>
                                             {isPending ? (
                                                 <Link
-                                                    href={`/documents/preview/${doc.id}?type=${doc.type}&token=${params.token}`} // We will need to secure preview too, or just allow public preview for now
+                                                    href={`/documents/preview/${doc.id}?type=${doc.type}&token=${token}`} // We will need to secure preview too, or just allow public preview for now
                                                     className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
                                                 >
                                                     <Upload className="w-4 h-4" />
@@ -86,7 +86,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
                                                 </Link>
                                             ) : (
                                                 <Link
-                                                    href={`/documents/preview/${doc.id}?type=${doc.type}&token=${params.token}`}
+                                                    href={`/documents/preview/${doc.id}?type=${doc.type}&token=${token}`}
                                                     className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-blue-600 transition-colors font-medium"
                                                 >
                                                     Voir le document
