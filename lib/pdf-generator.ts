@@ -18,7 +18,8 @@ export async function generateBLPDF(contract: Contract, sst: SSTEntity, delivera
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(100);
-    doc.text(`Période : ${deliverable.month}`, 15, 28);
+    const formattedMonth = new Date(deliverable.month + '-01').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    doc.text(`Période : ${formattedMonth.charAt(0).toUpperCase() + formattedMonth.slice(1)}`, 15, 28);
 
     // -- SST Info (Right aligned) --
     doc.setTextColor(0);
@@ -76,7 +77,7 @@ export async function generateBLPDF(contract: Contract, sst: SSTEntity, delivera
         head: [['Désignation', 'Quantité / Jours']],
         body: [
             [
-                `Forfait mensuel - ${deliverable.month}\n${data?.activityDescription || ''}`,
+                `Forfait mensuel - ${new Date(deliverable.month + '-01').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}\n${data?.activityDescription || ''}`,
                 data?.daysWorked ? `${data.daysWorked} Jours` : '1 Forfait'
             ]
         ],

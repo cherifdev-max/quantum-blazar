@@ -187,8 +187,8 @@ export default function DeliverablesList({ initialDeliverables, contracts }: Del
                                     <p className="line-clamp-2">{contract?.description}</p>
 
                                     <div className="flex flex-col">
-                                        <span className="font-medium text-slate-900">
-                                            {item.type} - {item.month}
+                                        <span className="font-medium text-slate-900 capitalize">
+                                            {item.type} - {new Date(item.month + '-01').toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
                                         </span>
                                         {item.data?.daysWorked && item.type === 'BL' && (
                                             <span className="text-xs text-slate-500">
