@@ -126,14 +126,23 @@ export default async function Home() {
           href="/contracts"
         />
         <KPICard
-          title="Livrables en Attente"
-          value={pendingDeliverables}
+          title="Documents à Valider"
+          value={deliverables.filter(d => d.status === "Soumis").length}
+          icon={CheckCircle}
+          trend="Action Requise"
+          trendUp={false} // Warning color
+          className="border-l-4 border-l-amber-500 bg-amber-50/50"
+          tooltip="Documents soumis par les SST, en attente de votre validation."
+          href="/deliverables?status=Soumis"
+        />
+        <KPICard
+          title="En Attente SST"
+          value={deliverables.filter(d => d.status === "En attente").length}
           icon={Clock}
-          trend="Urgent"
-          trendUp={false}
-          className="border-l-4 border-l-amber-500"
-          tooltip="Nombre de documents (BL/PV) en attente de validation ou d'envoi."
-          href="/deliverables"
+          description="Non soumis"
+          className="border-l-4 border-l-blue-400"
+          tooltip="Documents non encore remplis par les sous-traitants."
+          href="/deliverables?status=En%20attente"
         />
         <KPICard
           title="Actions Requises"

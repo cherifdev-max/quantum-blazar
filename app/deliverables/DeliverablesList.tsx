@@ -15,9 +15,14 @@ interface DeliverablesListProps {
     contracts: Contract[];
 }
 
+import { useSearchParams } from "next/navigation";
+
 export default function DeliverablesList({ initialDeliverables, contracts }: DeliverablesListProps) {
+    const searchParams = useSearchParams();
+    const initialStatus = searchParams.get("status") || "all";
+
     const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7)); // Current month YYYY-MM
-    const [filterStatus, setFilterStatus] = useState("all");
+    const [filterStatus, setFilterStatus] = useState(initialStatus);
 
     async function handleUpdateStatus(id: string, newStatus: string) {
         await updateDeliverableStatusAction(id, newStatus);
