@@ -72,8 +72,15 @@ Vous gardez le contrôle total.
 
 ---
 
-## 📱 Tech Stack (Pour les curieux)
-*   **Framework** : Next.js 14 (React)
-*   **Base de données** : Firebase (Firestore)
-*   **Emails** : Nodemailer (SMTP sécurisé)
-*   **Style** : Tailwind CSS
+## 🏗️ Architecture du Projet (Pour les curieux)
+
+Pour faire tourner cette machine, nous utilisons une architecture moderne et robuste, mais simple à comprendre :
+
+1.  **Le Visage (Frontend)** : `Next.js 14` & `React`.
+    *   C'est ce que vous voyez à l'écran. C'est rapide, fluide et adaptatif (PC/Mobile).
+2.  **La Mémoire (Base de Données)** : `Firebase Firestore`.
+    *   C'est là où sont stockés les contrats, les livrables et les signatures. Pas de serveur compliqué à gérer, tout est dans le cloud sécurisé de Google.
+3.  **Le Facteur (Emails)** : `Nodemailer`.
+    *   C'est le système qui livre les messages et les rappels directement dans la boîte mail des sous-traitants.
+4.  **Le Style (Design)** : `Tailwind CSS`.
+    *   Pour que ce soit beau, propre et agréable à utiliser au quotidien.
