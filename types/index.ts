@@ -56,6 +56,7 @@ export type DeliverableData = {
     clientValidatorName?: string; // Responsable client qui valide (Chef de projet, PO...)
     reservations?: string; // Réserves éventuelles sur la prestation
     tjm?: number; // Taux Journalier (Optionnel, pour ref)
+    signature?: string; // Base64 data URL - Added for electronic signature
 };
 
 export type Deliverable = {
