@@ -10,16 +10,16 @@ Plus besoin de courir après les documents. Laissez le système travailler pour 
 
 ```mermaid
 graph TD
-    A[👨‍💼 Vous (Admin)] -->|1. Créez| B(📄 Contrat SST sur la plateforme)
+    A["👨‍💼 Vous (Admin)"] -->|"1. Créez"| B("📄 Contrat SST sur la plateforme")
     subgraph Automatisation
-    B -->|2. Le 20 du mois| C{📧 Envoi Auto}
-    C -->|Lien Magique| D[👷 Sous-Traitant]
+    B -->|"2. Le 20 du mois"| C{"📧 Envoi Auto"}
+    C -->|"Lien Magique"| D["👷 Sous-Traitant"]
     end
-    D -->|3. Clique & Dépose| E(📝 Portail Sécurisé)
-    E -->|Signature Élec.| E
-    E -->|4. Soumission| F{✅ Validation}
-    F -->|Notification| A
-    A -->|5. Validation en 1 clic| G[🗂️ Dossier Clos & Facturable]
+    D -->|"3. Clique & Dépose"| E("📝 Portail Sécurisé")
+    E -->|"Signature Élec."| E
+    E -->|"4. Soumission"| F{"✅ Validation"}
+    F -->|"Notification"| A
+    A -->|"5. Validation en 1 clic"| G["🗂️ Dossier Clos & Facturable"]
     
     style A fill:#e0f2fe,stroke:#3b82f6,stroke-width:2px
     style D fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
