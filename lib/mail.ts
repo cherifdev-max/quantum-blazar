@@ -42,10 +42,10 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
 
         // Log content for JSON Transport (Offline Mode)
         // This is where the user will see the mail content in the terminal
-        if (info.message) {
+        if ((info as any).message) {
             console.log("-----------------------------------------");
             console.log("📧 [MOCK EMAIL] Contenu simulé :");
-            console.log(info.message);
+            console.log((info as any).message);
             console.log("-----------------------------------------");
         }
 
