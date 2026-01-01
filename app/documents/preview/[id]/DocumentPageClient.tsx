@@ -12,19 +12,66 @@ interface DocumentPageClientProps {
     deliverable: Deliverable;
 }
 
-export default function DocumentPageClient({ type, contract, sst, deliverable }: DocumentPageClientProps) {
+import { updateDeliverableStatus } from "@/lib/actions";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+interface DocumentPageClientProps {
+    type: 'BL' | 'PV';
+    contract: Contract;
+    sst: SSTEntity;
+    deliverable: Deliverable;
+    token?: string;
+}
+
+export default function DocumentPageClient({ type, contract, sst, deliverable, token }: DocumentPageClientProps) {
+    const router = useRouter();
+    const [submitting, setSubmitting] = useState(false);
+
     const handlePrint = () => {
         window.print();
     };
 
+    const handleSubmit = async () => {
+        if (!confirm("Voulez-vous confirmer et soumettre ce document ?\nUne fois soumis, vous ne pourrez plus le modifier.")) return;
+
+        setSubmitting(true);
+        try {
+            await updateDeliverableStatus(deliverable.id, 'Soumis');
+            alert("Document soumis avec succès !");
+            if (token) {
+                router.push(`/portal/${token}`);
+            } else {
+                router.push('/deliverables');
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Une erreur est survenue lors de la soumission.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    const backLink = token ? `/portal/${token}` : "/deliverables";
+    const canSubmit = token && (deliverable.status === 'En attente' || deliverable.status === 'Rejeté');
+
     return (
         <div className="min-h-screen bg-slate-100 p-8 print:p-0 print:bg-white">
             <div className="max-w-4xl mx-auto print:hidden mb-6 flex justify-between items-center">
-                <Link href="/deliverables" className="flex items-center text-slate-500 hover:text-slate-900">
+                <Link href={backLink} className="flex items-center text-slate-500 hover:text-slate-900">
                     <ChevronLeft className="h-5 w-5 mr-1" />
-                    Retour aux livrables
+                    {token ? "Retour à mon espace" : "Retour aux livrables"}
                 </Link>
                 <div className="flex gap-4">
+                    {canSubmit && (
+                        <button
+                            onClick={handleSubmit}
+                            disabled={submitting}
+                            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {submitting ? 'Validation...' : 'Valider et Soumettre'}
+                        </button>
+                    )}
                     <button
                         onClick={handlePrint}
                         className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 transition-colors"

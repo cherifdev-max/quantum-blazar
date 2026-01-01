@@ -29,6 +29,7 @@ export default async function DocumentPage(props: PageProps) {
             contract={contract}
             sst={sst}
             deliverable={deliverable}
+            token={searchParams.token as string}
         />
     );
 }
