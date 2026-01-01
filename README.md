@@ -1,4 +1,4 @@
-# 🚀 Quantum Blazar - Gestion Centralisée des Sous-Traitants
+# 🚀 Gestion Centralisée des Sous-Traitants
 
 Bienvenue sur **Quantum Blazar**, votre tour de contrôle pour gérer les contrats de sous-traitance, automatiser les tâches administratives et suivre votre rentabilité en temps réel.
 
