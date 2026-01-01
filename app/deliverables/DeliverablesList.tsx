@@ -6,16 +6,15 @@ import { CheckCircle, Clock, AlertCircle, Printer, Filter, Upload, XCircle, Refr
 import { Badge } from "@/components/ui/Badge";
 import { DeliverableStatus, Contract, Deliverable } from "@/types";
 import { cn } from "@/lib/utils";
-import { updateDeliverableStatusAction, deleteDeliverable } from "@/lib/actions";
+import { bulkUpdateDeliverableStatusAction, updateDeliverableStatusAction, deleteDeliverable } from "@/lib/actions";
 import DeleteButton from "@/components/ui/DeleteButton";
 import EditDeliverableDialog from "./EditDeliverableDialog";
+import { useSearchParams } from "next/navigation";
 
 interface DeliverablesListProps {
     initialDeliverables: any[]; // relaxed type for now
     contracts: Contract[];
 }
-
-import { useSearchParams } from "next/navigation";
 
 export default function DeliverablesList({ initialDeliverables, contracts }: DeliverablesListProps) {
     const searchParams = useSearchParams();
@@ -23,10 +22,35 @@ export default function DeliverablesList({ initialDeliverables, contracts }: Del
 
     const [filterMonth, setFilterMonth] = useState(new Date().toISOString().slice(0, 7)); // Current month YYYY-MM
     const [filterStatus, setFilterStatus] = useState(initialStatus);
+    const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
     async function handleUpdateStatus(id: string, newStatus: string) {
         await updateDeliverableStatusAction(id, newStatus);
     }
+
+    async function handleBulkValidate() {
+        if (!confirm(`Valider ${selectedItems.size} documents ?`)) return;
+        await bulkUpdateDeliverableStatusAction(Array.from(selectedItems), 'Validé');
+        setSelectedItems(new Set()); // Reset selection
+    }
+
+    const toggleSelection = (id: string) => {
+        const newSet = new Set(selectedItems);
+        if (newSet.has(id)) {
+            newSet.delete(id);
+        } else {
+            newSet.add(id);
+        }
+        setSelectedItems(newSet);
+    };
+
+    const toggleSelectAll = (items: any[]) => {
+        if (selectedItems.size === items.length) {
+            setSelectedItems(new Set());
+        } else {
+            setSelectedItems(new Set(items.map(i => i.id)));
+        }
+    };
 
     const getContract = (id: string) => contracts.find(c => c.id === id);
 
@@ -56,34 +80,62 @@ export default function DeliverablesList({ initialDeliverables, contracts }: Del
 
     return (
         <>
-            <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row gap-4 items-center">
-                <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                    <Filter className="h-4 w-4" />
-                    Période :
-                    <input
-                        type="month"
-                        value={filterMonth}
-                        onChange={(e) => setFilterMonth(e.target.value)}
-                        className="rounded-md border border-slate-200 px-3 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none"
-                    />
-                </label>
+            <div className="bg-white p-4 rounded-xl border border-slate-100 shadow-sm flex flex-col sm:flex-row gap-4 items-center justify-between sticky top-0 z-10">
+                <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                        <Filter className="h-4 w-4" />
+                        Période :
+                        <input
+                            type="month"
+                            value={filterMonth}
+                            onChange={(e) => setFilterMonth(e.target.value)}
+                            className="rounded-md border border-slate-200 px-3 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
+                    </label>
 
-                <div className="h-6 w-px bg-slate-200 mx-2 hidden sm:block"></div>
+                    <div className="h-6 w-px bg-slate-200 hidden sm:block"></div>
 
-                <div className="flex bg-slate-50 p-1 rounded-lg">
-                    {["all", "En attente", "Soumis", "Validé"].map((status) => (
-                        <button
-                            key={status}
-                            onClick={() => setFilterStatus(status)}
-                            className={cn(
-                                "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
-                                filterStatus === status ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-900"
-                            )}
-                        >
-                            {status === 'all' ? 'Tous' : status}
-                        </button>
-                    ))}
+                    <div className="flex bg-slate-50 p-1 rounded-lg">
+                        {["all", "En attente", "Soumis", "Validé"].map((status) => (
+                            <button
+                                key={status}
+                                onClick={() => setFilterStatus(status)}
+                                className={cn(
+                                    "px-3 py-1.5 text-xs font-medium rounded-md transition-all",
+                                    filterStatus === status ? "bg-white text-blue-600 shadow-sm" : "text-slate-500 hover:text-slate-900"
+                                )}
+                            >
+                                {status === 'all' ? 'Tous' : status}
+                            </button>
+                        ))}
+                    </div>
                 </div>
+
+                {/* Bulk Actions */}
+                {selectedItems.size > 0 && (
+                    <div className="flex items-center gap-4 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100 animate-in fade-in slide-in-from-top-2">
+                        <span className="text-sm font-bold text-blue-800">{selectedItems.size} sélectionné(s)</span>
+                        <div className="h-4 w-px bg-blue-200"></div>
+                        <button
+                            onClick={handleBulkValidate}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-md text-xs font-bold shadow-sm transition-colors flex items-center gap-1"
+                        >
+                            <CheckCircle className="h-3 w-3" />
+                            Tout Valider
+                        </button>
+                    </div>
+                )}
+            </div>
+
+            <div className="flex items-center gap-2 mb-2 ml-1">
+                <input
+                    type="checkbox"
+                    onChange={() => toggleSelectAll(filteredDeliverables)}
+                    checked={filteredDeliverables.length > 0 && selectedItems.size === filteredDeliverables.length}
+                    className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                    id="select-all"
+                />
+                <label htmlFor="select-all" className="text-xs text-slate-500 cursor-pointer">Tout sélectionner</label>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -97,10 +149,23 @@ export default function DeliverablesList({ initialDeliverables, contracts }: Del
                         const contract = getContract(item.contractId);
                         const Icon = getStatusIcon(item.status);
                         const statusColor = getStatusColor(item.status);
+                        const isSelected = selectedItems.has(item.id);
 
                         return (
-                            <div key={item.id} className="group bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md transition-all">
-                                <div className="flex justify-between items-start mb-4">
+                            <div key={item.id} className={cn(
+                                "group bg-white rounded-xl border shadow-sm p-5 hover:shadow-md transition-all relative",
+                                isSelected ? "border-blue-500 ring-1 ring-blue-500" : "border-slate-200"
+                            )}>
+                                <div className="absolute top-4 left-4 z-10" onClick={(e) => e.stopPropagation()}>
+                                    <input
+                                        type="checkbox"
+                                        checked={isSelected}
+                                        onChange={() => toggleSelection(item.id)}
+                                        className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
+                                    />
+                                </div>
+
+                                <div className="flex justify-between items-start mb-4 pl-8">
                                     <div className="flex items-center gap-2">
                                         <span className={cn(
                                             "h-8 w-8 rounded-lg flex items-center justify-center font-bold text-xs",
