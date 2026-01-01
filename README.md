@@ -83,4 +83,23 @@ Pour faire tourner cette machine, nous utilisons une architecture moderne et rob
 3.  **Le Facteur (Emails)** : `Nodemailer`.
     *   C'est le système qui livre les messages et les rappels directement dans la boîte mail des sous-traitants.
 4.  **Le Style (Design)** : `Tailwind CSS`.
-    *   Pour que ce soit beau, propre et agréable à utiliser au quotidien.
+
+---
+
+## 📂 Visite Guidée (Où trouver quoi ?)
+
+Si vous devez mettre les mains dans le moteur, voici le plan des lieux :
+
+*   **`app/`** : C'est ici que vivent les pages du site.
+    *   `page.tsx` : La page d'accueil (Dashboard).
+    *   `contracts/`, `sst/`, `deliverables/` : Les pages correspondant aux onglets du menu.
+    *   `portal/` : La zone secrète (et publique) pour les sous-traitants.
+*   **`lib/`** : Le cerveau de l'opération.
+    *   `actions.ts` : Toutes les fonctions "serveur" (créer un contrat, valider un document, envoyer un mail).
+    *   `firebase.ts` : La connexion à la base de données.
+    *   `mail.ts` : La configuration pour l'envoi d'emails.
+    *   `pdf-generator.ts` : L'usine à PDF.
+*   **`components/`** : Les briques LEGO.
+    *   Boutons, tableaux, formulaires... réutilisés un peu partout.
+*   **`types/`** : Le dictionnaire.
+    *   Définit à quoi ressemble un "Contrat" ou un "SST" pour que le code ne se perde pas.
