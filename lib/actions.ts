@@ -127,6 +127,12 @@ export async function sendCampaign(formData?: FormData) {
         // Find relevant BL for this SST and Month
         // We look for ANY contract active for this SST
         const sstContracts = allContracts.filter(c => c.sstId === sst.id);
+        console.log(`[DEBUG] SST ID: "${sst.id}" (${sst.companyName})`);
+        console.log(`[DEBUG] Total Contracts fetched: ${allContracts.length}`);
+        if (allContracts.length > 0) {
+            console.log(`[DEBUG] First Contract sstId: "${allContracts[0].sstId}"`);
+            console.log(`[DEBUG] Sample matching check: "${allContracts[0].sstId}" === "${sst.id}" ? ${allContracts[0].sstId === sst.id}`);
+        }
         console.log(`[DEBUG] SST ${sst.companyName} has ${sstContracts.length} contracts.`);
 
         for (const contract of sstContracts) {
