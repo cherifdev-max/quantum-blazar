@@ -129,13 +129,12 @@ export async function sendCampaign(formData?: FormData) {
         // Fix: Ensure robust comparison by trimming and converting to string
         const sstContracts = allContracts.filter(c => String(c.sstId).trim() === String(sst.id).trim());
 
-        console.log(`[DEBUG] SST ID: "${sst.id}" (${sst.companyName})`);
-        console.log(`[DEBUG] Total Contracts fetched: ${allContracts.length}`);
-        if (allContracts.length > 0) {
-            console.log(`[DEBUG] First Contract sstId: "${allContracts[0].sstId}"`);
-            console.log(`[DEBUG] Sample matching check: "${allContracts[0].sstId}" === "${sst.id}" ? ${allContracts[0].sstId === sst.id}`);
+        if (sstContracts.length === 0) {
+            console.log(`[INFO] Skipping SST ${sst.companyName} (No active contracts)`);
+            continue;
         }
-        console.log(`[DEBUG] SST ${sst.companyName} has ${sstContracts.length} contracts.`);
+
+        console.log(`[DEBUG] Processing SST ${sst.companyName} (${sstContracts.length} contracts)`);
 
         for (const contract of sstContracts) {
             // Find both BL and PV for this month
