@@ -103,3 +103,83 @@ Si vous devez mettre les mains dans le moteur, voici le plan des lieux :
     *   Boutons, tableaux, formulaires... réutilisés un peu partout.
 *   **`types/`** : Le dictionnaire.
     *   Définit à quoi ressemble un "Contrat" ou un "SST" pour que le code ne se perde pas.
+
+---
+
+# Documentation Technique du Projet
+
+## 🧠 Vue Fonctionnelle (Pour Product Owner / Métier)
+Ce schéma illustre **qui fait quoi** et **ce que produit le système**, sans jargon technique.
+
+```mermaid
+graph LR
+    Manager[👤 Manager / Admin] -->|Pilote & Valide| System[📱 Application SST Manager]
+    SST[👷 Prestataire] -->|Dépose ses documents| System
+    
+    System -->|Automatise| Relance[📧 Relances & Notifications]
+    System -->|Produit| Doc[📄 Contrats PDF & PV signés]
+    System -->|Centralise| Data[🗄️ Données & Tableau de Bord]
+```
+
+## 🏗 Architecture Technique (Pour l'équipe Dév)
+Le projet repose sur une architecture **Fullstack Next.js 16** (App Router), hébergée en Serverless.
+
+```mermaid
+graph TD
+    Client["Navigateur Client"] -->|HTTPS| Next["Next.js Server (Vercel/Node)"]
+    Next -->|Server Actions| Logic["Logique Métier (lib/actions.ts)"]
+    Logic -->|Read/Write| DB[("Firebase Firestore")]
+    Logic -->|SMTP| Email["Service Mail (Nodemailer)"]
+    Logic -->|Buffer| PDF["Générateur PDF (jspdf)"]
+    Next -->|Auth Cookie| Middleware["Middleware de Sécurité"]
+```
+
+### ⚙️ Comment ça marche (Cycle de vie d'une requête)
+Pour les développeurs, le flux typique est le suivant :
+
+1.  **Client (Interaction)** : L'utilisateur clique sur un bouton (ex: "Valider le BL").
+2.  **Server Action** : Une fonction backend (`lib/actions.ts`) est invoquée directement.
+3.  **Traitements** :
+    - La fonction vérifie la session (Middleware/Cookie).
+    - Elle modifie la donnée dans **Firestore**.
+    - Elle peut déclencher un service annexe (Email, PDF).
+4.  **Retour UI** : Le serveur commande au client de rafraîchir la donnée (`revalidatePath`), l'interface se met à jour instantanément.
+
+
+---
+
+## 🎨 Partie Frontend (Interface)
+L'interface est construite en **React** avec **Tailwind CSS**.
+
+- **Server Components (RSC)** : Toutes les pages (`app/page.tsx`, `app/contracts/page.tsx`) sont rendues sur le serveur. Elles récupèrent les données directement (sans `useEffect`) pour une vitesse maximale.
+- **Client Components** : Utilisés uniquement pour l'interactivité (Boutons, Formulaires). Ils sont marqués par `"use client"`.
+- **UI Kit** : Une bibliothèque de composants maison (`components/ui`) stylisée avec Tailwind pour une identité visuelle "Premium" (Couleurs Deep Blue).
+
+---
+
+## ⚙️ Partie Backend (Logique)
+Le "Backend" n'est pas une API séparée (pas de Node.js/Express classique). Il est intégré directement dans Next.js via les **Server Actions**.
+
+- **Server Actions** (`lib/actions.ts`) : Ce sont des fonctions asynchrones qui s'exécutent côté serveur mais qu'on appelle depuis le frontend comme des fonctions classiques. C'est ici que réside toute la logique métier (Création de contrat, Validation, Envoi email).
+- **Base de Données** : **Firebase Firestore** (NoSQL). Données structurées en collections (`sst`, `contracts`, `deliverables`).
+- **Emails** : **Nodemailer**. Configuré pour utiliser un SMTP externe ou le mode Simulation (Offline) si dev.
+- **PDF** : **jsPDF** & **jspdf-autotable**. Génération programmatique des documents (BL/PV) côté serveur pour garantir leur intégrité.
+
+---
+
+## 🔒 Sécurité & Authentification
+- **Middleware** (`middleware.ts`) : Intercepte chaque requête. Vérifie la présence d'un cookie de session sécurisé (`HttpOnly`).
+- **Protection** : Si pas de cookie -> Redirection forcée vers `/login`.
+- **Session** : Gérée via un système de cookie signé (pas de JWT complexe pour l'instant, simple et efficace).
+
+---
+
+## 🚀 Stack Technique Résumé
+| Couche | Technologie | Rôle |
+| :--- | :--- | :--- |
+| **Framework** | Next.js 16 (App Router) | Structure Fullstack |
+| **Langage** | TypeScript | Typage fort & Sécurité |
+| **Styles** | Tailwind CSS | Design System |
+| **Base de Données** | Firestore (Firebase) | Stockage Données |
+| **Emails** | Nodemailer | Notifications |
+| **PDF** | jsPDF | Génération Documents |
