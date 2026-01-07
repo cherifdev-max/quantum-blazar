@@ -2,6 +2,8 @@
 
 Bienvenue sur **plateforme de Gestion Centralisée des Sous-Traitants**, votre tour de contrôle pour gérer les contrats de sous-traitance, automatiser les tâches administratives et suivre votre rentabilité en temps réel.
 
+
+[Cliquez ici pour voir le document sur Google Drive](https://drive.google.com/file/d/1EwqE_RCvCEQsQzbSGAZhpIfwO7iTMmy_/view?usp=sharing)
 ---
 
 ## 📊 Comment ça marche ? (Le Flux Magique)
